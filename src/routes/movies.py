@@ -44,6 +44,7 @@ async def process_many_to_many(
         for value in values
     ])
 
+
 @router.get("/{movie_id}/", response_model=MovieCreateResponseSchema)
 async def get_movie_by_id(
     movie_id: int, db: AsyncSession = Depends(get_db)
