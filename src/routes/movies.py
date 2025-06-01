@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
@@ -37,11 +39,10 @@ async def get_or_create_by_field(
 async def process_many_to_many(
     db: AsyncSession, model, field_name: str, values: list[str]
 ):
-    return [
-        await get_or_create_by_field(db, model, field_name, value)
+    return await asyncio.gather(*[
+        get_or_create_by_field(db, model, field_name, value)
         for value in values
-    ]
-
+    ])
 
 @router.get("/{movie_id}/", response_model=MovieCreateResponseSchema)
 async def get_movie_by_id(
